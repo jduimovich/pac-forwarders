@@ -1,0 +1,60 @@
+
+REPO=$1
+echo "Webhook for $REPO"    
+DIR=$(basename $REPO) 
+
+mkdir -p ./repos
+LOCAL_GIT=./repos/$DIR 
+if test -d $LOCAL_GIT; then 
+    echo "Update repo $REPO"
+    (cd $LOCAL_GIT; git pull  &> /dev/null )  
+else       
+    echo "First clone of repo $REPO"
+    (cd ./repos; git clone $REPO  &> /dev/null )    
+fi   
+
+APP_YAML=./repos/$DIR/application.yaml  
+# if gitops repo, make sure it is installed" 
+if test -f $APP_YAML; then    
+    echo "This is a gitops repo $REPO"
+    APP_NAME=$(yq .metadata.name $APP_YAML) 
+    echo "APP NAME $APP_NAME"
+    oc get application $APP_NAME -n openshift-gitops &> /dev/null 
+    ERR=$?
+    echo $ERR
+    if [  "$ERR" == "0" ]
+    then
+        echo "Gitops Application $APP_NAME already exists"
+    else
+        echo "Creating Gitops Application $APP_NAME "
+        APP_NS=$(yq .spec.destination.namespace $APP_YAML)
+        kubectl get ns $APP_NS &> /dev/null
+        ERR=$?
+        if [  "$ERR" != "0" ]
+        then
+            oc new-project $APP_NS
+            oc label namespace  $APP_NS argocd.argoproj.io/managed-by=openshift-gitops
+            bash ~/dev/auth-creds/install-secrets
+        else
+            echo "$APP_NS exists"
+            oc label namespace  $APP_NS argocd.argoproj.io/managed-by=openshift-gitops &> /dev/null
+        fi 
+        cat $APP_YAML
+        oc apply -f $APP_YAML 
+    fi 
+    exit  
+else  
+    echo "$REPO is not a gitops repo "  
+fi   
+
+PUSH_HANDLER=.tekton/docker-push.yaml 
+if test -f ./repos/$DIR/$PUSH_HANDLER; then   
+    echo "Running Push pipeline in $PUSH_HANDLER"
+    cd ./repos/$DIR  
+    PRUN=$(mktemp)
+    tkn-pac  resolve -f $PUSH_HANDLER | tee $PRUN  | oc create -f -
+    echo "Image Location: " $(yq '.spec.params[] | select(.name == "output-image").value'  $PRUN) 
+else 
+    echo "$DIR has no tekton handler skipping"  
+fi  
+ 
