@@ -7,12 +7,18 @@ mkdir -p ./repos
 LOCAL_GIT=./repos/$DIR 
 if test -d $LOCAL_GIT; then 
     echo "Update repo $REPO"
-    (cd $LOCAL_GIT; git pull  &> /dev/null )  
+    (cd $LOCAL_GIT; git pull  )  
 else       
     echo "First clone of repo $REPO"
-    (cd ./repos; git clone $REPO  &> /dev/null )    
+    (cd ./repos; git clone $REPO  )    
 fi   
+if test -d $LOCAL_GIT; then 
+    echo "Fail $REPO to process"  
+else       
+    echo "$REPO ok" 
+fi 
 
+echo "Check application" 
 APP_YAML=./repos/$DIR/application.yaml  
 # if gitops repo, make sure it is installed" 
 if test -f $APP_YAML; then    
@@ -47,6 +53,7 @@ else
     echo "$REPO is not a gitops repo "  
 fi   
 
+echo "Check Pipelines" 
 PUSH_HANDLER=.tekton/docker-push.yaml 
 if test -f ./repos/$DIR/$PUSH_HANDLER; then   
     echo "Running Push pipeline in $PUSH_HANDLER"
