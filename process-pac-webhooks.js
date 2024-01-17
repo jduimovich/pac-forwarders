@@ -35,6 +35,7 @@ app.post("/", function (req, res) {
     console.log(JSON.stringify(req.body, null, 4))
   }
 });
-app.listen(3000, function () {
-  console.log("server is running on port 3000");
+
+app.listen(9999, function () {
+  console.log("server is running on port 9999");
 })

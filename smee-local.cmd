@@ -1,1 +1,1 @@
-smee -u https://smee.io/jduimovich-crc-machine -t http://localhost:3000
+smee -u https://smee.io/jduimovich-crc-machine -t http://localhost:9999
