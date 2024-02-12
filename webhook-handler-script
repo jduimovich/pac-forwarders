@@ -17,42 +17,7 @@ if test -d $LOCAL_GIT; then
 else       
     echo "$REPO ok" 
 fi 
-
-echo "Check application" 
-APP_YAML=./repos/$DIR/application.yaml  
-# if gitops repo, make sure it is installed" 
-if test -f $APP_YAML; then    
-    echo "This is a gitops repo $REPO"
-    APP_NAME=$(yq .metadata.name $APP_YAML) 
-    echo "APP NAME $APP_NAME"
-    oc get application $APP_NAME -n openshift-gitops &> /dev/null 
-    ERR=$?
-    echo $ERR
-    if [  "$ERR" == "0" ]
-    then
-        echo "Gitops Application $APP_NAME already exists"
-    else
-        echo "Creating Gitops Application $APP_NAME "
-        APP_NS=$(yq .spec.destination.namespace $APP_YAML)
-        kubectl get ns $APP_NS &> /dev/null
-        ERR=$?
-        if [  "$ERR" != "0" ]
-        then
-            oc new-project $APP_NS
-            oc label namespace  $APP_NS argocd.argoproj.io/managed-by=openshift-gitops
-            bash ~/dev/auth-creds/install-secrets
-        else
-            echo "$APP_NS exists"
-            oc label namespace  $APP_NS argocd.argoproj.io/managed-by=openshift-gitops &> /dev/null
-        fi 
-        cat $APP_YAML
-        oc apply -f $APP_YAML 
-    fi 
-    exit  
-else  
-    echo "$REPO is not a gitops repo "  
-fi   
-
+ 
 echo "Check Pipelines" 
 PUSH_HANDLER=.tekton/docker-push.yaml 
 if test -f ./repos/$DIR/$PUSH_HANDLER; then   

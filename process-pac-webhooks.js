@@ -14,6 +14,8 @@ app.use(bodyParser.json())
 app.post("/", function (req, res) {
   // ack right away
   res.send("Ok");
+  // log all 
+  console.log(JSON.stringify(req.body, null, 4))
   if (req.body.repository) { 
     var repo = req.body.repository.html_url
     console.log("POST for repository: ", repo) 
@@ -30,10 +32,7 @@ app.post("/", function (req, res) {
         console.log(`stdout:\n${stdout}`);
       });
     }
-  } else {
-    console.log("NO REPO so dump data")
-    console.log(JSON.stringify(req.body, null, 4))
-  }
+  }   
 });
 
 app.listen(9999, function () {
