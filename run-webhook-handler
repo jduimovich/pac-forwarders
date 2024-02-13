@@ -1,3 +1,0 @@
-
-rm -rf ./repos
-nodemon process-pac-webhooks.js
