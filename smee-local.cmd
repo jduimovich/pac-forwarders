@@ -8,5 +8,5 @@ set SECURE=--insecure-skip-webhook-verify  --insecure-skip-tls-verify
 set PORT=9999
 
 echo "Smee in background window, remember to close when done."
-start cmd /min /c smee -u %PAC_CALLBACK% -t http://localhost:%PORT%
+start cmd /c smee -u %PAC_CALLBACK% -t http://localhost:%PORT%
 ..\sprayproxy\sprayproxy server %SECURE%  --port %PORT% -- %PAC_HANDLER% 
