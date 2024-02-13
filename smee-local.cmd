@@ -9,4 +9,4 @@ set PORT=9999
 
 echo "Smee in background window, remember to close when done."
 start cmd /c smee -u %PAC_CALLBACK% -t http://localhost:%PORT%
-..\sprayproxy\sprayproxy server %SECURE%  --port %PORT% -- %PAC_HANDLER% 
+..\sprayproxy\sprayproxy server %SECURE%  --port %PORT% --backend %PAC_HANDLER% 
