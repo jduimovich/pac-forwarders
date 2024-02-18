@@ -9,5 +9,6 @@ set PORT=9999
 
 echo "Smee in new tab."
 echo "new" > last-ts.txt
+wt -w 0 nt -d %cd% cmd /c %cd%\loop-notify-check.cmd %PAC_HANDLER%
 wt  -w 0 nt cmd /c smee -u %PAC_CALLBACK% -t http://localhost:%PORT%
 ..\sprayproxy\sprayproxy server %SECURE%  --port %PORT% --backend %PAC_HANDLER% > sprayproxy.log 2>&1 
