@@ -8,5 +8,6 @@ set SECURE=--insecure-skip-webhook-verify  --insecure-skip-tls-verify
 set PORT=9999
 
 echo "Smee in new tab."
+echo "new" > last-ts.txt
 wt  -w 0 nt cmd /c smee -u %PAC_CALLBACK% -t http://localhost:%PORT%
-..\sprayproxy\sprayproxy server %SECURE%  --port %PORT% --backend %PAC_HANDLER% 
+..\sprayproxy\sprayproxy server %SECURE%  --port %PORT% --backend %PAC_HANDLER% > sprayproxy.log 2>&1 

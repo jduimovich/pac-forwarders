@@ -1,3 +1,7 @@
 node_modules/
 repos/
 log
+sprayproxy.log
+last-message-tmp.txt 
+last-ts-tmp.txt 
+last-ts.txt
