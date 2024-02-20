@@ -1,7 +1,7 @@
 
-# Start a smee forwarder to localhost:9999 and use spray proxy to forward it
-# the double forward is because smee does not actually connect to the local pac handler 
-# it seems to error, this is a quick workaround. 
+rem Start a smee forwarder to localhost:9999 and use spray proxy to forward it
+rem the double forward is because smee does not actually connect to the local pac handler 
+rem it seems to error, this is a quick workaround. 
 set PAC_CALLBACK=https://smee.io/jduimovich-crc-machine
 set PAC_HANDLER=https://pipelines-as-code-controller-openshift-pipelines.apps-crc.testing
 set SECURE=--insecure-skip-webhook-verify  --insecure-skip-tls-verify
